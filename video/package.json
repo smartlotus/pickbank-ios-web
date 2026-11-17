@@ -1,0 +1,26 @@
+{
+  "name": "pickbank-ios-intro-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "54s 1080p Liquid Glass introduction video for PickBank iOS built with Remotion",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion render PickBank-iOS-Intro out/pickbank-ios-intro.mp4 --codec=h264 --crf=22",
+    "audio": "node scripts/generate-soundtrack.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit && node --check scripts/generate-soundtrack.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.544",
+    "@remotion/fonts": "^4.0.544",
+    "@remotion/renderer": "^4.0.544",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.544"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.8.2"
+  }
+}

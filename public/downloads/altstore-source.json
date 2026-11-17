@@ -1,0 +1,57 @@
+{
+  "name": "PickBank · 拾念记账官方侧载源",
+  "identifier": "com.smartlotus.pickbank.source",
+  "subtitle": "零广告 · 本地主权 · iOS 26 液态玻璃记账与像素伙伴",
+  "description": "面向 SideStore 与 AltStore 的 PickBank iOS 官方发布源。支持免 $99 开发者年费在手机端 Wi-Fi 无线续签安装。",
+  "iconURL": "https://pickbank-ios.pages.dev/assets/icon-512.png",
+  "headerURL": "https://pickbank-ios.pages.dev/assets/pets/rooms/cat_night.jpg",
+  "website": "https://pickbank-ios.pages.dev",
+  "tintColor": "#FFB74D",
+  "featuredApps": [
+    "com.smartlotus.pickbank"
+  ],
+  "apps": [
+    {
+      "name": "PickBank 拾念记账",
+      "bundleIdentifier": "com.smartlotus.pickbank",
+      "developerName": "SmartLotus",
+      "subtitle": "iOS 26 液态玻璃 · 自然语言记账 · 8 种昼夜像素伙伴 · 本地主权金库",
+      "localizedDescription": "PickBank 拾念记账 iOS 液态玻璃版：\n• 一句话中英多笔自然语言解析，毫秒级实时生成胶囊预览。\n• Int64 分整数级 SQLite (WAL) 账本与永久分类名称快照。\n• 经典暖黑 OLED ↔ Hermes 皇室蓝 & 酸性黄双奢美感切换。\n• 8 种昼夜同源像素伙伴，预算结余化作生命能量。\n• 无损 .pickbank.json（SHA-256 校验）、AES-256-GCM 加密备份、定时快照时光机与微信/支付宝/Excel/Android 导入。",
+      "iconURL": "https://pickbank-ios.pages.dev/assets/icon-512.png",
+      "tintColor": "#FFB74D",
+      "category": "finance",
+      "screenshots": [
+        "https://pickbank-ios.pages.dev/assets/pets/rooms/cat_night.jpg",
+        "https://pickbank-ios.pages.dev/assets/pets/rooms/panda_day.jpg"
+      ],
+      "versions": [
+        {
+          "version": "2.0.0",
+          "date": "2026-11-17T00:00:00Z",
+          "localizedDescription": "iOS 26 Liquid Glass 全新发布：支持 iPhone 悬浮胶囊导航与 iPadOS 分栏工作台、8 种昼夜同源像素伙伴、凌晨 2 点自动快照时光机、BYOK Keychain AI 顾问。",
+          "downloadURL": "https://github.com/smartlotus/pickbank-ios/releases/download/v2.0.0/PickBank-iOS.ipa",
+          "size": 18874368,
+          "minOSVersion": "18.0"
+        }
+      ],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSDocumentsFolderUsageDescription": "用于导出及同步外部文件夹中的 .pickbank.json / .xlsx 本地备份档案。"
+        }
+      }
+    }
+  ],
+  "news": [
+    {
+      "title": "PickBank 2.0.0 Liquid Glass 现已发布",
+      "identifier": "pickbank-2-0-0-release",
+      "caption": "支持 iOS 26 液态玻璃质感、Hermes 皇室蓝高定模式、8 只像素伙伴与定时快照金库。",
+      "date": "2026-11-17T00:00:00Z",
+      "tintColor": "#FFB74D",
+      "imageURL": "https://pickbank-ios.pages.dev/assets/pets/rooms/cat_night.jpg",
+      "appID": "com.smartlotus.pickbank",
+      "notify": true
+    }
+  ]
+}

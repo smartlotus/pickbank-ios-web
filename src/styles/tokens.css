@@ -1,0 +1,122 @@
+@font-face {
+  font-family: 'FusionPixel';
+  src: url('/assets/fusion-pixel-subset.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@property --fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+:root {
+  /* Native UA controls (scrollbars, form controls, dialog backdrop) stay dark in both Classic & Hermes */
+  color-scheme: dark;
+
+  /* Classic OLED Warm Dark (SumTheme.classic) */
+  --bg: #000000;
+  --bg-elevated: #121110;
+  --surface: #1b1917;
+  --surface-elevated: #262321;
+  --text: #f5f2f0;
+  --text-muted: #b8b0a7;
+  --text-subtle: #968d84;
+  --accent: #ffb74d;
+  --on-accent: #14110d;
+  --income: #a5d6a7;
+  --expense: #ffab91;
+  --transfer: #ffe082;
+  --glass-bg: color-mix(in oklab, var(--surface) 84%, transparent);
+  --glass-rim-top: rgba(255, 249, 245, 0.32);
+  --glass-rim-edge: rgba(255, 249, 245, 0.14);
+  --divider: #332f2c;
+  --shadow-ambient: 0 24px 64px -20px rgba(0, 0, 0, 0.72);
+  --card-offset-shadow: none;
+
+  --radius-card: 22px;
+  --radius-inner: 16px;
+  --radius-pill: 999px;
+  --hermes-top-rule: 0px;
+
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang SC',
+    'Hiragino Sans GB', 'Noto Sans SC', system-ui, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-pixel: 'FusionPixel', var(--font-mono);
+
+  --scrollbar-track: #121110;
+  --scrollbar-thumb: #6f675f;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  accent-color: var(--accent);
+}
+
+:root[data-theme='hermes'] {
+  /* Hermes Editorial Royal Blue (SumTheme.hermes) */
+  --bg: #0000f2;
+  --bg-elevated: #0000d8;
+  --surface: #1010d8;
+  --surface-elevated: #1717c6;
+  --text: #f5f5f5;
+  --text-muted: #d8d8fc;
+  --text-subtle: #bcbcf4;
+  --accent: #edff45;
+  --on-accent: #0000f2;
+  --income: #edff45;
+  --expense: #ff92a5;
+  --transfer: #f5f5f5;
+  --glass-bg: color-mix(in oklab, var(--surface) 88%, transparent);
+  --glass-rim-top: rgba(245, 245, 245, 0.88);
+  --glass-rim-edge: rgba(245, 245, 245, 0.48);
+  --divider: rgba(245, 245, 245, 0.34);
+  --shadow-ambient: 0 22px 54px -20px rgba(0, 0, 80, 0.75);
+  --card-offset-shadow: 3px 3px 0 #f5f5f5;
+
+  --radius-card: 6px;
+  --radius-inner: 6px;
+  --radius-pill: 6px;
+  --hermes-top-rule: 2px;
+
+  --font-display: 'Songti SC', 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+  --scrollbar-track: #09099e;
+  --scrollbar-thumb: #d8d8fc;
+}
+
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 999px;
+  }
+}
+
+@media (forced-colors: active) {
+  :root,
+  :root[data-theme='hermes'] {
+    --bg: Canvas;
+    --surface: Canvas;
+    --surface-elevated: Canvas;
+    --text: CanvasText;
+    --text-muted: CanvasText;
+    --accent: Highlight;
+    --on-accent: HighlightText;
+    --glass-rim-top: ButtonBorder;
+    --glass-rim-edge: ButtonBorder;
+    --divider: ButtonBorder;
+  }
+}
