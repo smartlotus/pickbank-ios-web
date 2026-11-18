@@ -1,5 +1,3 @@
-import type { AppThemeMode } from '../core/types';
-
 let cachedDisplayTransitionSupport: boolean | undefined;
 
 export function canTransitionDisplay(): boolean {
@@ -70,10 +68,10 @@ export function installClosedByFallback(dialog: HTMLDialogElement): () => void {
   };
 }
 
-export function switchThemeWithCircularReveal(
+export function switchThemeWithCircularReveal<T extends string>(
   triggerEl: HTMLElement | null,
-  nextTheme: AppThemeMode,
-  applyTheme: (theme: AppThemeMode) => void
+  nextTheme: T,
+  applyTheme: (theme: T) => void
 ): void {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const docAny = document as Document & {

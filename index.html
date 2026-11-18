@@ -1,27 +1,29 @@
 <!doctype html>
-<html lang="zh-Hans" data-theme="classic">
+<html lang="zh-Hans" data-edition="paper">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#F4F2EC" />
     <meta
       name="description"
-      content="PickBank 拾念记账 iOS 液态玻璃版：一句话多笔自然语言记账、Classic 暖黑 & Hermes 皇室蓝双高定美学、8 种昼夜同源像素伙伴、本地 SHA-256 账本金库与 $0 免签侧载安装。"
+      content="PickBank 拾念记账 原生 Swift 6 + SwiftUI iOS/iPadOS 应用程序产品规格书与交互预览沙盒（非 WebApp）。忠实还原移植自 Android v1.9.2，零费用免签装机。"
     />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="PickBank" />
 
     <!-- Synchronous FOUC prevention before first paint -->
     <script>
       (function () {
         try {
-          var t = localStorage.getItem('pickbank_theme_v2');
-          if (t === 'hermes' || t === 'classic') {
-            document.documentElement.dataset.theme = t;
+          var e = localStorage.getItem('pickbank_edition_v3');
+          if (e === 'paper' || e === 'carbon' || e === 'hermes') {
+            document.documentElement.dataset.edition = e;
             var tc = document.querySelector('meta[name="theme-color"]');
-            if (tc) tc.setAttribute('content', t === 'hermes' ? '#0000F2' : '#000000');
+            if (tc) {
+              tc.setAttribute(
+                'content',
+                e === 'hermes' ? '#0018E6' : e === 'carbon' ? '#0C0C0B' : '#F4F2EC'
+              );
+            }
           }
           var l = localStorage.getItem('pickbank_lang_v2');
           if (l === 'en' || l === 'zh') {
@@ -33,7 +35,6 @@
 
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png" />
     <link rel="apple-touch-icon" href="/assets/icon-192.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
     <link
       rel="preload"
       href="/assets/fusion-pixel-subset.woff2"
@@ -41,7 +42,7 @@
       type="font/woff2"
       crossorigin
     />
-    <title>PickBank 拾念记账 iOS · 液态玻璃版</title>
+    <title>PICKBANK · 拾念记账 原生 iOS/iPadOS App 规格书</title>
   </head>
   <body>
     <div id="root"></div>

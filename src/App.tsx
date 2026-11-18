@@ -20,6 +20,7 @@ import type {
   PetSpeciesId,
   SimTabId,
   SimulatorStoreState,
+  SwissEdition,
   TransactionRecord,
 } from './core/types';
 import { buildSnapshotMetadata, txFingerprint } from './core/vault';
@@ -31,8 +32,19 @@ import {
 } from './utils/platform';
 
 const STORAGE_KEY_SIM = 'pickbank_sim_v2';
+const STORAGE_KEY_EDITION = 'pickbank_edition_v3';
 const STORAGE_KEY_THEME = 'pickbank_theme_v2';
 const STORAGE_KEY_LANG = 'pickbank_lang_v2';
+
+function loadInitialEdition(): SwissEdition {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_EDITION);
+    if (saved === 'paper' || saved === 'carbon' || saved === 'hermes') return saved;
+  } catch {
+    // Ignore storage denial
+  }
+  return 'paper';
+}
 
 function loadInitialTheme(): AppThemeMode {
   try {
@@ -70,6 +82,7 @@ function loadInitialSimState(): SimulatorStoreState {
 }
 
 export const App: React.FC = () => {
+  const [edition, setEdition] = useState<SwissEdition>(loadInitialEdition);
   const [theme, setTheme] = useState<AppThemeMode>(loadInitialTheme);
   const [lang, setLang] = useState<AppLang>(loadInitialLang);
   const [simState, setSimState] = useState<SimulatorStoreState>(loadInitialSimState);
@@ -87,15 +100,6 @@ export const App: React.FC = () => {
     return 'records';
   });
 
-  const [isStandalonePwa, setIsStandalonePwa] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    const params = new URLSearchParams(window.location.search);
-    return (
-      params.get('pwa') === '1' ||
-      window.matchMedia('(display-mode: standalone)').matches
-    );
-  });
-
   const [theaterOpen, setTheaterOpen] = useState(false);
   const [theaterSeekSec, setTheaterSeekSec] = useState<number | null>(null);
   const [undoDeletedTx, setUndoDeletedTx] = useState<TransactionRecord | null>(null);
@@ -103,13 +107,24 @@ export const App: React.FC = () => {
   const nlpInputRef = useRef<HTMLInputElement | null>(null);
   const undoTimerRef = useRef<number | null>(null);
 
-  // Sync DOM attributes, document title, theme-color, and localStorage
+  // Sync DOM edition, document title, theme-color, and localStorage
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.edition = edition;
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', theme === 'hermes' ? '#0000F2' : '#000000');
+      metaThemeColor.setAttribute(
+        'content',
+        edition === 'hermes' ? '#0018E6' : edition === 'carbon' ? '#0C0C0B' : '#F4F2EC'
+      );
     }
+    try {
+      localStorage.setItem(STORAGE_KEY_EDITION, edition);
+    } catch {
+      // Ignore
+    }
+  }, [edition]);
+
+  useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY_THEME, theme);
     } catch {
@@ -135,12 +150,15 @@ export const App: React.FC = () => {
     }
   }, [simState]);
 
-  // Cross-tab theme & language sync + focusgroup polyfill + scroll reveal fallback
+  // Cross-tab edition & language sync + focusgroup polyfill + scroll reveal fallback
   useEffect(() => {
     initFocusgroupPolyfill();
     const stopReveal = initScrollRevealFallback();
 
     const onStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY_EDITION && (e.newValue === 'paper' || e.newValue === 'carbon' || e.newValue === 'hermes')) {
+        setEdition(e.newValue);
+      }
       if (e.key === STORAGE_KEY_THEME && (e.newValue === 'classic' || e.newValue === 'hermes')) {
         setTheme(e.newValue);
       }
@@ -154,6 +172,27 @@ export const App: React.FC = () => {
       window.removeEventListener('storage', onStorage);
     };
   }, []);
+
+  const handleSelectEdition = useCallback(
+    (nextEdition: SwissEdition, triggerEl: HTMLElement | null) => {
+      switchThemeWithCircularReveal(triggerEl, nextEdition, (resolved) => {
+        setEdition(resolved);
+        const syncedAppTheme: AppThemeMode = resolved === 'hermes' ? 'hermes' : 'classic';
+        setTheme(syncedAppTheme);
+        setSimState((prev) => ({
+          ...prev,
+          snapshot: {
+            ...prev.snapshot,
+            preferences: {
+              ...prev.snapshot.preferences,
+              themeMode: syncedAppTheme === 'hermes' ? 'HERMES' : 'CLASSIC',
+            },
+          },
+        }));
+      });
+    },
+    []
+  );
 
   const handleToggleTheme = useCallback(
     (triggerEl: HTMLElement | null) => {
@@ -536,40 +575,34 @@ export const App: React.FC = () => {
       </a>
 
       <LiquidNavbar
-        theme={theme}
+        edition={edition}
         lang={lang}
-        isStandalonePwa={isStandalonePwa}
-        onToggleTheme={handleToggleTheme}
+        onSelectEdition={handleSelectEdition}
         onToggleLang={handleToggleLang}
-        onToggleStandalone={() => setIsStandalonePwa((v) => !v)}
       />
 
       <main id="main-content" tabIndex={-1}>
-        {!isStandalonePwa ? (
-          <>
-            <HeroSection
-              theme={theme}
-              lang={lang}
-              state={simState}
-              onOpenCinema={() => {
-                setTheaterSeekSec(0);
-                setTheaterOpen(true);
-              }}
-              onJumpToSimulator={handleJumpToSimulator}
-            />
+        <HeroSection
+          theme={theme}
+          lang={lang}
+          state={simState}
+          onOpenCinema={() => {
+            setTheaterSeekSec(0);
+            setTheaterOpen(true);
+          }}
+          onJumpToSimulator={handleJumpToSimulator}
+        />
 
-            <CinemaSection
-              lang={lang}
-              theaterOpen={theaterOpen}
-              initialSeekSec={theaterSeekSec}
-              onOpenTheater={(sec) => {
-                setTheaterSeekSec(sec ?? 0);
-                setTheaterOpen(true);
-              }}
-              onCloseTheater={() => setTheaterOpen(false)}
-            />
-          </>
-        ) : null}
+        <CinemaSection
+          lang={lang}
+          theaterOpen={theaterOpen}
+          initialSeekSec={theaterSeekSec}
+          onOpenTheater={(sec) => {
+            setTheaterSeekSec(sec ?? 0);
+            setTheaterOpen(true);
+          }}
+          onCloseTheater={() => setTheaterOpen(false)}
+        />
 
         <SimulatorSection
           theme={theme}
@@ -579,7 +612,6 @@ export const App: React.FC = () => {
           state={simState}
           undoDeletedTx={undoDeletedTx}
           nlpInputRef={nlpInputRef}
-          isStandalonePwa={isStandalonePwa}
           onChangeDevice={setDevice}
           onChangeTab={setActiveTab}
           onToggleTheme={handleToggleTheme}
@@ -603,15 +635,11 @@ export const App: React.FC = () => {
           onResetDemo={handleResetDemo}
         />
 
-        {!isStandalonePwa ? (
-          <>
-            <ArchitectureBento lang={lang} />
-            <InstallHub lang={lang} />
-          </>
-        ) : null}
+        <ArchitectureBento lang={lang} />
+        <InstallHub lang={lang} />
       </main>
 
-      {!isStandalonePwa ? <Footer lang={lang} /> : null}
+      <Footer lang={lang} />
     </div>
   );
 };

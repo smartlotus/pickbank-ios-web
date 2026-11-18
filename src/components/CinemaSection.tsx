@@ -25,7 +25,6 @@ export const CinemaSection: React.FC<CinemaSectionProps> = ({
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(true);
   const [activeChapterId, setActiveChapterId] = useState<string>('intro');
 
-  // Respect prefers-reduced-motion: default preview paused if user prefers reduced motion
   useEffect(() => {
     const vid = previewVideoRef.current;
     if (!vid) return;
@@ -39,7 +38,6 @@ export const CinemaSection: React.FC<CinemaSectionProps> = ({
     }
   }, []);
 
-  // Sync theater playback & chapter seek when opened
   useEffect(() => {
     const vid = theaterVideoRef.current;
     if (!vid) return;
@@ -47,9 +45,7 @@ export const CinemaSection: React.FC<CinemaSectionProps> = ({
       if (initialSeekSec !== null) {
         vid.currentTime = initialSeekSec;
       }
-      vid.play().catch(() => {
-        // User can click play manually if autoplay with sound is blocked
-      });
+      vid.play().catch(() => {});
     } else {
       vid.pause();
     }
@@ -89,78 +85,92 @@ export const CinemaSection: React.FC<CinemaSectionProps> = ({
   };
 
   return (
-    <section id="cinema" className="section-block scroll-reveal">
-      <div className="section-inner">
-        <div className="section-header-split">
-          <div>
-            <p className="eyebrow-pill">
-              <Clapperboard size={14} aria-hidden="true" />
-              <span>{t.cinemaEyebrow}</span>
+    <section id="cinema" className="swiss-section scroll-reveal">
+      <div className="swiss-container">
+        <div className="swiss-section-header">
+          <div className="swiss-section-kicker-col">
+            <p className="swiss-kicker">
+              <Clapperboard size={13} aria-hidden="true" />
+              <span>{t.cinemaIndex}</span>
             </p>
-            <h2 className="section-title">{t.cinemaHeading}</h2>
+            <p className="mono-meta">1920 × 1080 · 30 FPS · H.264 / AAC</p>
           </div>
-          <p className="section-desc">{t.cinemaDesc}</p>
+          <div className="swiss-section-title-col">
+            <h2 className="swiss-section-title">{t.cinemaHeading}</h2>
+            <p className="swiss-section-desc">{t.cinemaDesc}</p>
+          </div>
         </div>
 
-        <div className="cinema-stage glass-surface">
-          <div className="cinema-frame">
-            <video
-              ref={previewVideoRef}
-              className="cinema-video"
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster="/assets/pets/rooms/cat_night.jpg"
-              width={1920}
-              height={1080}
-              aria-label={t.cinemaDialogTitle}
-            >
-              <source src="/media/pickbank-ios-intro.mp4" type="video/mp4" />
-            </video>
+        {/* Asymmetric 4fr / 8fr Swiss Screening Grid */}
+        <div className="cinema-swiss-grid">
+          <div className="cinema-chapter-index" role="list" aria-label={t.cinemaJumpHint}>
+            <div className="cinema-index-head">
+              <span className="mono-label">{t.cinemaJumpHint}</span>
+            </div>
+            {CINEMA_CHAPTERS.map((ch, idx) => {
+              const isAct = activeChapterId === ch.id;
+              return (
+                <button
+                  key={ch.id}
+                  type="button"
+                  role="listitem"
+                  className={`cinema-index-row ${isAct ? 'is-active' : ''}`}
+                  onClick={() => handleJumpChapter(ch.id, ch.timeSec)}
+                >
+                  <span className="cinema-row-num">0{idx + 1}</span>
+                  <span className="cinema-row-time">{ch.timeLabel}</span>
+                  <span className="cinema-row-copy">
+                    <strong>{lang === 'zh' ? ch.zhTitle : ch.enTitle}</strong>
+                    <span>{lang === 'zh' ? ch.zhSub : ch.enSub}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-            <div className="cinema-overlay-bar">
-              {/* WCAG 2.2.2 Pause/Play control; omits aria-pressed since visible label switches */}
+          <div className="cinema-screen-col">
+            <div className="cinema-frame-box">
+              <video
+                ref={previewVideoRef}
+                className="cinema-video"
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster="/assets/pets/rooms/cat_night.jpg"
+                width={1920}
+                height={1080}
+                aria-label={t.cinemaDialogTitle}
+              >
+                <source src="/media/pickbank-ios-intro.mp4" type="video/mp4" />
+              </video>
+            </div>
+
+            <div className="cinema-transport-bar">
               <button
                 type="button"
-                className="cinema-ctrl-btn"
+                className="swiss-btn swiss-btn--ghost"
                 onClick={togglePreviewPlayback}
               >
                 {isPreviewPlaying ? (
-                  <Pause size={16} aria-hidden="true" />
+                  <Pause size={15} aria-hidden="true" />
                 ) : (
-                  <Play size={16} aria-hidden="true" />
+                  <Play size={15} aria-hidden="true" />
                 )}
                 <span>{isPreviewPlaying ? t.cinemaPausePreview : t.cinemaPlayPreview}</span>
               </button>
 
+              <span className="mono-meta cinema-duration-tag">00:54 · REMOTION MASTER</span>
+
               <button
                 type="button"
-                className="btn-primary"
+                className="swiss-btn swiss-btn--accent"
                 onClick={() => onOpenTheater(0)}
               >
-                <Volume2 size={16} aria-hidden="true" />
+                <Volume2 size={15} aria-hidden="true" />
                 <span>{t.cinemaOpenTheater}</span>
               </button>
             </div>
-          </div>
-
-          <div className="cinema-chapters-grid" role="list" aria-label={t.cinemaJumpHint}>
-            {CINEMA_CHAPTERS.map((ch) => (
-              <button
-                key={ch.id}
-                type="button"
-                role="listitem"
-                className={`cinema-chapter-card ${activeChapterId === ch.id ? 'is-active' : ''}`}
-                onClick={() => handleJumpChapter(ch.id, ch.timeSec)}
-              >
-                <span className="chapter-time">{ch.timeLabel}</span>
-                <strong className="chapter-title">
-                  {lang === 'zh' ? ch.zhTitle : ch.enTitle}
-                </strong>
-                <span className="chapter-sub">{lang === 'zh' ? ch.zhSub : ch.enSub}</span>
-              </button>
-            ))}
           </div>
         </div>
       </div>

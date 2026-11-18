@@ -134,7 +134,7 @@ export const SummaryTab: React.FC<SummaryTabProps> = ({
             onClick={(e) => onToggleTheme(e.currentTarget)}
           >
             <Palette size={14} aria-hidden="true" />
-            <span>{theme === 'classic' ? t.themeToHermes : t.themeToClassic}</span>
+            <span>{theme === 'classic' ? t.simAppThemeHermes : t.simAppThemeClassic}</span>
           </button>
         </div>
       </div>

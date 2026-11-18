@@ -1,3 +1,4 @@
+export type SwissEdition = 'paper' | 'carbon' | 'hermes';
 export type AppThemeMode = 'classic' | 'hermes';
 export type AppLang = 'zh' | 'en';
 export type DeviceFormFactor = 'iphone' | 'ipad';
