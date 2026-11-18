@@ -84,12 +84,13 @@ export function switchThemeWithCircularReveal<T extends string>(
     };
   };
 
-  if (prefersReduced || typeof docAny.startViewTransition !== 'function') {
+  if (prefersReduced || typeof docAny.startViewTransition !== 'function' || activeViewTransition !== null) {
+    activeViewTransition?.skipTransition?.();
+    activeViewTransition = null;
+    document.documentElement.removeAttribute('data-theme-vt');
     applyTheme(nextTheme);
     return;
   }
-
-  activeViewTransition?.skipTransition?.();
 
   let originX = window.innerWidth * 0.5;
   let originY = 48;
@@ -131,7 +132,10 @@ export function switchThemeWithCircularReveal<T extends string>(
     });
 
   transition.finished.finally(() => {
-    document.documentElement.removeAttribute('data-theme-vt');
+    if (activeViewTransition === transition) {
+      activeViewTransition = null;
+      document.documentElement.removeAttribute('data-theme-vt');
+    }
   });
 }
 
