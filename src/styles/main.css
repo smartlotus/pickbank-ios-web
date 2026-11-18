@@ -100,7 +100,15 @@ pre {
   inset-block-start: 1rem;
 }
 
-/* View Transition Circular Reveal for Classic <-> Hermes */
+/* View Transition Circular Reveal for Edition / Theme switching */
+::view-transition,
+::view-transition-group(*),
+::view-transition-image-pair(*),
+::view-transition-old(root),
+::view-transition-new(root) {
+  pointer-events: none;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
