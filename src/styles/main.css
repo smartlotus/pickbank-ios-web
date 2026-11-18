@@ -379,10 +379,8 @@ html[data-theme-vt='active']::view-transition-new(root) {
   position: sticky;
   inset-block-start: 0;
   z-index: 60;
-  background: var(--glass-bg);
+  background: var(--bg);
   border-block-end: 1px solid var(--grid-strong);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .swiss-masthead-inner {
@@ -2558,12 +2556,14 @@ dialog.liquid-dialog::backdrop {
 
 @container (width < 640px) {
   .swiss-parity-table,
+  .swiss-parity-table caption,
   .swiss-parity-table thead,
   .swiss-parity-table tbody,
   .swiss-parity-table tr,
   .swiss-parity-table th,
   .swiss-parity-table td {
     display: block;
+    width: 100%;
   }
 
   .swiss-parity-table thead {

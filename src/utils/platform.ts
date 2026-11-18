@@ -68,6 +68,8 @@ export function installClosedByFallback(dialog: HTMLDialogElement): () => void {
   };
 }
 
+let activeViewTransition: { skipTransition?: () => void } | null = null;
+
 export function switchThemeWithCircularReveal<T extends string>(
   triggerEl: HTMLElement | null,
   nextTheme: T,
@@ -75,13 +77,19 @@ export function switchThemeWithCircularReveal<T extends string>(
 ): void {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const docAny = document as Document & {
-    startViewTransition?: (cb: () => void) => { ready: Promise<void>; finished: Promise<void> };
+    startViewTransition?: (cb: () => void) => {
+      ready: Promise<void>;
+      finished: Promise<void>;
+      skipTransition?: () => void;
+    };
   };
 
   if (prefersReduced || typeof docAny.startViewTransition !== 'function') {
     applyTheme(nextTheme);
     return;
   }
+
+  activeViewTransition?.skipTransition?.();
 
   let originX = window.innerWidth * 0.5;
   let originY = 48;
@@ -100,6 +108,7 @@ export function switchThemeWithCircularReveal<T extends string>(
   const transition = docAny.startViewTransition(() => {
     applyTheme(nextTheme);
   });
+  activeViewTransition = transition;
 
   transition.ready
     .then(() => {
